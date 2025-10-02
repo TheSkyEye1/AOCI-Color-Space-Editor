@@ -10,6 +10,7 @@ namespace aoci_lab2
 {
     public partial class MainWindow : Window
     {
+        private Image<Bgr, byte> sourceImage;
         public MainWindow()
         {
             InitializeComponent();
@@ -52,5 +53,70 @@ namespace aoci_lab2
             return resultImage;
         }
 
+        private void LoadImage_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Файлы изображений (*.jpg, *.jpeg, *.png)|*.jpg;*.jpeg;*.png";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                sourceImage = new Image<Bgr, byte>(openFileDialog.FileName);
+
+                MainImage.Source = ToBitmapSource(sourceImage);
+            }
+        }
+
+        private void SaveImage_Click(object sender, RoutedEventArgs e)
+        {
+            BitmapSource currentWpfImage = MainImage.Source as BitmapSource;
+            if (currentWpfImage == null)
+            {
+                MessageBox.Show("Отсутсвует изображение");
+                return;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|Bitmap Image (*.bmp)|*.bmp";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    Image<Bgr, byte> imageToSave = ToEmguImage(currentWpfImage);
+                    imageToSave.Save(saveFileDialog.FileName);
+
+                    MessageBox.Show($"Изображение успешно сохранено в {saveFileDialog.FileName}");
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show($"Ошибка! Не могу сохранить файл. Подробности: {ex.Message}");
+                }
+            }
+        }
+
+        private void UpdateImage_Click(object sender, RoutedEventArgs e)
+        {
+            BitmapSource currentWpfImage = MainImage.Source as BitmapSource;
+
+            if (currentWpfImage == null)
+            {
+                MessageBox.Show("Изображение отсутсвует");
+                return;
+            }
+
+            sourceImage = ToEmguImage(currentWpfImage);
+            MessageBox.Show("Изменения применены. Теперь это новый оригинал.");
+        }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            if (sourceImage == null) return;
+            MainImage.Source = ToBitmapSource(sourceImage);
+        }
+
+        private void OnFilterChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
+        }
     }
 }

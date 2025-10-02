@@ -65,7 +65,10 @@
                 </Border>
 
                 <Label Content="Гамма коррекция"/>
-                <Slider Minimum="0.01" Maximum="5" Value="1" Name="GammaSlider" ValueChanged="GammaShift" Margin="0,0,0,10"/>
+                <Slider Minimum="0.01" Maximum="5" Value="1" Name="GammaSlider" ValueChanged="GammaChanged" Margin="0,0,0,10"/>
+
+                <Label Content="Постеризация"/>
+                <Slider Minimum="2" Maximum="32" Value="8" Name="LevelsSlider" ValueChanged="LevelsChanged" Margin="0,0,0,10"/>
 
             </StackPanel>
         </Border>

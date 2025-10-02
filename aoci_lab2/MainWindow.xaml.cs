@@ -201,7 +201,36 @@ namespace aoci_lab2
 
         private void OnHSVFilterChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (sourceImage == null) return;
 
+            Image<Hsv, byte> hsvImage = sourceImage.Convert<Hsv, byte>();
+
+            double hsvContrast = ContrastHSVSlider.Value;
+            double saturation = SaturationHSVSlider.Value;
+            double hueShift = HueHSVSlider.Value;
+
+            for (int y = 0; y < hsvImage.Rows; y++)
+            {
+                for (int x = 0; x < hsvImage.Cols; x++)
+                {
+                    Hsv pixel = hsvImage[y, x];
+
+                    double v = pixel.Value; 
+                    double newV = hsvContrast * (v - 128) + 128;
+                    pixel.Value = (byte)Math.Max(0, Math.Min(255, newV));
+
+                    double newHue = (pixel.Hue + hueShift / 2.0);
+                    if (newHue < 0) newHue += 180;
+                    pixel.Hue = (byte)(newHue % 180);
+
+                    double newSat = pixel.Satuation * saturation;
+                    pixel.Satuation = (byte)Math.Min(255, newSat);
+
+                    hsvImage[y, x] = pixel;
+                }
+            }
+
+            MainImage.Source = ToBitmapSource(hsvImage.Convert<Bgr, byte>());
         }
     }
 }

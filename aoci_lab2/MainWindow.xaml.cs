@@ -146,7 +146,55 @@ namespace aoci_lab2
 
         private void OnFilterChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (sourceImage == null) return;
+
+            Image<Bgr, byte> filteredImage = sourceImage.Clone();
+
+            double contrast = ContrastSlider.Value;
+            double saturation = SaturationSlider.Value;
+            double hueShift = HueSlider.Value;
             
+            if (Math.Abs(contrast - 1.0) > 0.01)
+            {
+                for (int y = 0; y < filteredImage.Rows; y++)
+                {
+                    for (int x = 0; x < filteredImage.Cols; x++)
+                    {
+                        Bgr pixel = filteredImage[y, x];
+                        pixel.Red = (byte)Math.Max(0, Math.Min(255, contrast * (pixel.Red - 128) + 128));
+                        pixel.Green = (byte)Math.Max(0, Math.Min(255, contrast * (pixel.Green - 128) + 128));
+                        pixel.Blue = (byte)Math.Max(0, Math.Min(255, contrast * (pixel.Blue - 128) + 128));
+                        filteredImage[y, x] = pixel;
+                    }
+                }
+            }
+
+            
+            if (Math.Abs(saturation - 1.0) > 0.01 || Math.Abs(hueShift) > 0.01)
+            {
+                Image<Hsv, byte> hsvImage = filteredImage.Convert<Hsv, byte>();
+
+                for (int y = 0; y < hsvImage.Rows; y++)
+                {
+                    for (int x = 0; x < hsvImage.Cols; x++)
+                    {
+                        Hsv pixel = hsvImage[y, x];
+
+                        double newHue = (pixel.Hue + hueShift / 2.0);
+                        if (newHue < 0) newHue += 180;
+                        pixel.Hue = (byte)(newHue % 180);
+
+                        double newSat = pixel.Satuation * saturation;
+                        pixel.Satuation = (byte)Math.Min(255, newSat);
+
+                        hsvImage[y, x] = pixel;
+                    }
+                }
+
+                filteredImage = hsvImage.Convert<Bgr, byte>();
+            }
+
+            MainImage.Source = ToBitmapSource(filteredImage);
         }
 
         

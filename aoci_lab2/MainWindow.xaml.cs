@@ -107,16 +107,50 @@ namespace aoci_lab2
             sourceImage = ToEmguImage(currentWpfImage);
             MessageBox.Show("Изменения применены. Теперь это новый оригинал.");
         }
-
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             if (sourceImage == null) return;
             MainImage.Source = ToBitmapSource(sourceImage);
         }
 
+        private void Sepia_Click(object sender, RoutedEventArgs e)
+        {
+            if (sourceImage == null) return;
+
+            //Снова создаем клон для безопасной работы.
+            Image<Bgr, byte> sepiaImage = sourceImage.Clone();
+
+            for (int y = 0; y < sepiaImage.Rows; y++)
+            {
+                for (int x = 0; x < sepiaImage.Cols; x++)
+                {
+                    Bgr pixel = sepiaImage[y, x];
+                    double r = pixel.Red;
+                    double g = pixel.Green;
+                    double b = pixel.Blue;
+
+                    double newR = 0.393 * r + 0.769 * g + 0.189 * b;
+                    double newG = 0.349 * r + 0.686 * g + 0.168 * b;
+                    double newB = 0.272 * r + 0.534 * g + 0.131 * b;
+
+                    pixel.Red = (byte)Math.Min(255, newR);
+                    pixel.Green = (byte)Math.Min(255, newG);
+                    pixel.Blue = (byte)Math.Min(255, newB);
+
+                    sepiaImage[y, x] = pixel;
+                }
+            }
+
+            MainImage.Source = ToBitmapSource(sepiaImage);
+        }
+
         private void OnFilterChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
+            
         }
+
+        
+
+        
     }
 }

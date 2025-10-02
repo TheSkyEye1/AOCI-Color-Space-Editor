@@ -24,7 +24,7 @@
                 <Button Content="Сохранить изображение" Click="SaveImage_Click" Margin="0,0,0,20" FontWeight="Bold"/>
                 <Button Content="Применить изменения" Click="UpdateImage_Click" Margin="0,0,0,5"/>
                 <Button Content="Сбросить" Click="Clear_Click" Margin="0,0,0,20"/>
-                <Button Content="Сепия" Click="Clear_Click" Margin="0,0,0,15"/>
+                <Button Content="Сепия" Click="Sepia_Click" Margin="0,0,0,15"/>
 
                 <Label Content="Контраст"/>
                 <!-- ValueChanged="OnFilterChanged" - один обработчик на все слайдеры! -->

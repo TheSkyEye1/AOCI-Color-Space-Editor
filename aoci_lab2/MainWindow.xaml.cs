@@ -232,5 +232,10 @@ namespace aoci_lab2
 
             MainImage.Source = ToBitmapSource(hsvImage.Convert<Bgr, byte>());
         }
+
+        private void ColorShiftChanged(object sender, RoutedPropertyChangedEventArgs<T> e)
+        {
+
+        }
     }
 }

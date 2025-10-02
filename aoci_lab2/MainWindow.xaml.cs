@@ -262,5 +262,33 @@ namespace aoci_lab2
 
             MainImage.Source = ToBitmapSource(colorshiftImage);
         }
+
+        private void GammaShift(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (sourceImage == null) return;
+
+            Image<Bgr, byte> gammaImage = sourceImage.Clone();
+
+            double gamma = GammaSlider.Value;
+
+            for (int y = 0; y < gammaImage.Rows; y++)
+            {
+                for (int x = 0; x < gammaImage.Cols; x++)
+                {
+                    Bgr pixel = gammaImage[y, x];
+                    double newR = 255 * Math.Pow(pixel.Red / 255.0, 1.0 / gamma);
+                    double newG = 255 * Math.Pow(pixel.Green / 255.0, 1.0 / gamma);
+                    double newB = 255 * Math.Pow(pixel.Blue / 255.0, 1.0 / gamma);
+
+                    pixel.Red = (byte)Math.Max(0, Math.Min(255, newR));
+                    pixel.Green = (byte)Math.Max(0, Math.Min(255, newG));
+                    pixel.Blue = (byte)Math.Max(0, Math.Min(255, newB));
+
+                    gammaImage[y, x] = pixel;
+                }
+            }
+
+            MainImage.Source = ToBitmapSource(gammaImage);
+        }
     }
 }

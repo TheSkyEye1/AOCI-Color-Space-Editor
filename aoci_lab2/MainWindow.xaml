@@ -54,7 +54,7 @@
             <StackPanel Margin="5">
                 <Border BorderBrush="DimGray" BorderThickness="1" Margin="5">
                     <StackPanel>
-                        <Label Content="Изменения цвета" FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                        <Label Content="Коррекция цвета" FontWeight="Bold" HorizontalContentAlignment="Center"/>
                         <Label Content="Красный"/>
                         <Slider Minimum="-255" Maximum="255" Value="0" Name="RedSlider" ValueChanged="ColorShiftChanged"/>
                         <Label Content="Зеленый"/>
@@ -63,6 +63,10 @@
                         <Slider Minimum="-255" Maximum="255" Value="0" Name="BlueSlider" ValueChanged="ColorShiftChanged" Margin="0,0,0,10"/>
                     </StackPanel>
                 </Border>
+
+                <Label Content="Гамма коррекция"/>
+                <Slider Minimum="0.01" Maximum="5" Value="1" Name="GammaSlider" ValueChanged="GammaShift" Margin="0,0,0,10"/>
+
             </StackPanel>
         </Border>
     </Grid>

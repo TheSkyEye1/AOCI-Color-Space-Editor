@@ -5,8 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:aoci_lab2"
         mc:Ignorable="d"
-        Title="Лабораторная работа #2" Height="450" Width="800">
+        Title="Лабораторная работа #2" Height="500" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
+        <!-- Панель с кнопками и слайдерами -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="DimGray" BorderThickness="1" Margin="5">
+            <StackPanel Margin="5">
+
+                <Button Content="Открыть изображение" Click="LoadImage_Click" Margin="0,0,0,5" FontWeight="Bold"/>
+                <Button Content="Сохранить изображение" Click="SaveImage_Click" Margin="0,0,0,20" FontWeight="Bold"/>
+                <Button Content="Применить изменения" Click="UpdateImage_Click" Margin="0,0,0,5"/>
+                <Button Content="Сбросить" Click="Clear_Click" Margin="0,0,0,20"/>
+                <Button Content="Сепия" Click="Clear_Click" Margin="0,0,0,15"/>
+
+                <Label Content="Контраст"/>
+                <!-- ValueChanged="OnFilterChanged" - один обработчик на все слайдеры! -->
+                <Slider Minimum="0.5" Maximum="3.0" Value="1.0" Name="ContrastSlider" ValueChanged="OnFilterChanged"/>
+
+                <Label Content="Насыщенность"/>
+                <Slider Minimum="0.0" Maximum="2.0" Value="1.0" Name="SaturationSlider" ValueChanged="OnFilterChanged"/>
+
+                <Label Content="Цветовой тон (Hue)"/>
+                <!-- Сдвиг от -180 до +180 градусов -->
+                <Slider Minimum="-180" Maximum="180" Value="0" Name="HueSlider" ValueChanged="OnFilterChanged"/>
+
+
+
+            </StackPanel>
+        </Border>
+
+        <!-- Здесь будет картинка -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="DimGray" BorderThickness="1" Margin="5">
+
+            <Image Name="MainImage"  Margin="5" Stretch="Uniform"/>
+
+        </Border>
     </Grid>
 </Window>

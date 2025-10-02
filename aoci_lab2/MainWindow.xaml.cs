@@ -233,9 +233,34 @@ namespace aoci_lab2
             MainImage.Source = ToBitmapSource(hsvImage.Convert<Bgr, byte>());
         }
 
-        private void ColorShiftChanged(object sender, RoutedPropertyChangedEventArgs<T> e)
+        private void ColorShiftChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (sourceImage == null) return;
 
+            Image<Bgr, byte> colorshiftImage = sourceImage.Clone();
+
+            int red = (int)RedSlider.Value;
+            int green = (int)GreenSlider.Value;
+            int blue = (int)BlueSlider.Value;
+
+            for (int y = 0; y < colorshiftImage.Rows; y++)
+            {
+                for (int x = 0; x < colorshiftImage.Cols; x++)
+                {
+                    Bgr pixel = colorshiftImage[y, x];
+                    double newR = pixel.Red + red;
+                    double newG = pixel.Green + green;
+                    double newB = pixel.Blue + blue;
+
+                    pixel.Red = (byte)Math.Max(0, Math.Min(255, newR));
+                    pixel.Green = (byte)Math.Max(0, Math.Min(255, newG));
+                    pixel.Blue = (byte)Math.Max(0, Math.Min(255, newB));
+
+                    colorshiftImage[y, x] = pixel;
+                }
+            }
+
+            MainImage.Source = ToBitmapSource(colorshiftImage);
         }
     }
 }

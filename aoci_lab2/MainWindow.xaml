@@ -58,9 +58,9 @@
                         <Label Content="Красный"/>
                         <Slider Minimum="-255" Maximum="255" Value="0" Name="RedSlider" ValueChanged="ColorShiftChanged"/>
                         <Label Content="Зеленый"/>
-                        <Slider Minimum="-255" Maximum="255" Value="0" Name="BlueSlider" ValueChanged="ColorShiftChanged"/>
+                        <Slider Minimum="-255" Maximum="255" Value="0" Name="GreenSlider" ValueChanged="ColorShiftChanged"/>
                         <Label Content="Синий"/>
-                        <Slider Minimum="-255" Maximum="255" Value="0" Name="GreenSlider" ValueChanged="ColorShiftChanged" Margin="0,0,0,10"/>
+                        <Slider Minimum="-255" Maximum="255" Value="0" Name="BlueSlider" ValueChanged="ColorShiftChanged" Margin="0,0,0,10"/>
                     </StackPanel>
                 </Border>
             </StackPanel>

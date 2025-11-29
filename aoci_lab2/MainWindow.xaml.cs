@@ -18,6 +18,23 @@ namespace aoci_lab2
         public MainWindow()
         {
             InitializeComponent();
+
+            //Создание изображения в формате HSV
+            Image<Hsv, byte> hsvImage = new Image<Hsv, byte>(640, 480);
+
+            //Обращение к каналу Тона (Hue)
+            hsvImage.Data[0, 0, 0] = (byte)(128);
+
+            //Данная запись вызовет у нас ошибку так как тон не должен быть >=180
+            hsvImage.Data[0, 0, 0] = (byte)(255);
+
+            //Обращение к каналу Насыщенности (Saturation)
+            hsvImage.Data[0, 0, 1] = (byte)(200);
+
+            //Обращение к каналу Яркости (Value)
+            hsvImage.Data[0, 0, 2] = (byte)(128);
+
+
         }
 
         public BitmapSource ToBitmapSource(Image<Bgr, byte> image)
@@ -159,36 +176,33 @@ namespace aoci_lab2
 
             Image<Bgr, byte> filteredRGBImage = sourceImage.Clone();
 
+            int brightness = (int)BrightnessRGBSlider.Value;
             double contrast = ContrastRGBSlider.Value;
             double saturation = SaturationRGBSlider.Value;
 
-            //1. Применение контрастности в RGB
-            //Проверяем, действительно ли нужно применять фильтр (избегаем лишней работы, если значение = 1).
+            if (Math.Abs(brightness - 1.0) >= 1)
+            { 
+                for (int y = 0; y < filteredRGBImage.Rows; y++)
+                {
+                    for (int x = 0; x < filteredRGBImage.Cols; x++)
+                    {
+                        Bgr pixel = filteredRGBImage[y, x];
+
+                        pixel.Red = (byte)Math.Max(0, Math.Min(255, pixel.Red + brightness));
+                        pixel.Green = (byte)Math.Max(0, Math.Min(255, pixel.Green + brightness));
+                        pixel.Blue = (byte)Math.Max(0, Math.Min(255, pixel.Blue + brightness));
+
+                        filteredRGBImage[y, x] = pixel;
+                    }
+                }
+            }
+
             if (Math.Abs(contrast - 1.0) > 0.01)
             {
                 for (int y = 0; y < filteredRGBImage.Rows; y++)
                 {
                     for (int x = 0; x < filteredRGBImage.Cols; x++)
                     {
-
-                        /*/ 
-                        
-                        ВАЖНОЕ ОТЛИЧИЕ ОТ ПРЕДЫДУЩЕГО ПРОЕКТА:
-                          
-                        Этот метод является более правильным способом изменения контраста.
-                        В отличие от простого умножения цвета на значение, которое лишь увеличивало общую
-                        яркость, этот алгоритм работает относительно серого цвета.
-                         
-                        Как работает формула: contrast * (value - 128) + 128
-                        1. (value - 128): Значение цвета "центрируется" вокруг нуля. Средний серый (128) становится 0, светлые тона становятся положительными, темные - отрицательными.
-                        2. contrast * (результат предыдущего шан): Расстояние от серого умножается на коэффициент. Если contrast > 1, светлые тона отдаляются от серого и становятся светлее),
-                        а темные - в обратную сторону и становятся темнее.
-                        3. (...) + 128: Результат сдвигается обратно в видимый диапазон [0, 255].
-
-                        В результате светлые тона становятся еще светлее, а темные — темнее, при этом средний серый цвет почти не изменяется. Это и есть классическая контрастность.
-
-                        /*/
-
                         Bgr pixel = filteredRGBImage[y, x];
                         pixel.Red = (byte)Math.Max(0, Math.Min(255, contrast * (pixel.Red - 128) + 128));
                         pixel.Green = (byte)Math.Max(0, Math.Min(255, contrast * (pixel.Green - 128) + 128));
@@ -198,35 +212,31 @@ namespace aoci_lab2
                 }
             }
 
-            if (Math.Abs(saturation - 1.0) < 0.01)
+            if (Math.Abs(saturation - 1.0) > 0.01)
             {
-                MainImage.Source = ToBitmapSource(filteredRGBImage);
-            }
-
-            //2. Применение насыщенности в RGB
-            //Этот фильтр применяется последовательно, уже к измененной контрастности.
-            for (int y = 0; y < filteredRGBImage.Rows; y++)
-            {
-                for (int x = 0; x < filteredRGBImage.Cols; x++)
+                for (int y = 0; y < filteredRGBImage.Rows; y++)
                 {
-                    Bgr pixel = filteredRGBImage[y, x];
-                    double r = pixel.Red;
-                    double g = pixel.Green;
-                    double b = pixel.Blue;
+                    for (int x = 0; x < filteredRGBImage.Cols; x++)
+                    {
+                        Bgr pixel = filteredRGBImage[y, x];
+                        double r = pixel.Red;
+                        double g = pixel.Green;
+                        double b = pixel.Blue;
 
-                    //Находим "яркость" (оттенок серого) пикселя.
-                    double gray = r * 0.299 + g * 0.587 + b * 0.114;
+                        //Находим "яркость" (оттенок серого) пикселя.
+                        double gray = r * 0.299 + g * 0.587 + b * 0.114;
 
-                    //Смешиваем исходный цвет с его серым эквивалентом.
-                    double newR = gray + (r - gray) * saturation;
-                    double newG = gray + (g - gray) * saturation;
-                    double newB = gray + (b - gray) * saturation;
+                        //Смешиваем исходный цвет с его серым эквивалентом.
+                        double newR = gray + (r - gray) * saturation;
+                        double newG = gray + (g - gray) * saturation;
+                        double newB = gray + (b - gray) * saturation;
 
-                    pixel.Red = (byte)Math.Max(0, Math.Min(255, newR));
-                    pixel.Green = (byte)Math.Max(0, Math.Min(255, newG));
-                    pixel.Blue = (byte)Math.Max(0, Math.Min(255, newB));
+                        pixel.Red = (byte)Math.Max(0, Math.Min(255, newR));
+                        pixel.Green = (byte)Math.Max(0, Math.Min(255, newG));
+                        pixel.Blue = (byte)Math.Max(0, Math.Min(255, newB));
 
-                    filteredRGBImage[y, x] = pixel;
+                        filteredRGBImage[y, x] = pixel;
+                    }
                 }
             }
 
@@ -248,6 +258,7 @@ namespace aoci_lab2
 
             Image<Hsv, byte> hsvImage = sourceImage.Convert<Hsv, byte>();
 
+            double hsvBrightness = BrightnessHSVSlider.Value;
             double hsvContrast = ContrastHSVSlider.Value;
             double saturation = SaturationHSVSlider.Value;
             double hueShift = HueHSVSlider.Value;
@@ -258,10 +269,10 @@ namespace aoci_lab2
                 {
                     Hsv pixel = hsvImage[y, x];
 
-                    //Контрастность в HSV — это просто изменение канала V (Value/Яркость).
-                    //Формула та же, что и в RGB, но применяется только к одному каналу.
-                    double v = pixel.Value; 
-                    double newV = hsvContrast * (v - 128) + 128;
+                    double v = pixel.Value;
+                    pixel.Value = (byte)Math.Max(0, Math.Min(255, v + hsvBrightness));
+
+                    double newV = hsvContrast * (pixel.Value - 128) + 128;
                     pixel.Value = (byte)Math.Max(0, Math.Min(255, newV));
 
                     //Сдвиг цветового тона(Hue) — простое сложение.
@@ -280,39 +291,6 @@ namespace aoci_lab2
 
             //ВАЖНО: Конвертируем обратно в BGR, чтобы WPF мог отобразить изображение.
             MainImage.Source = ToBitmapSource(hsvImage.Convert<Bgr, byte>());
-        }
-
-        //Выполняем тонирование изображения путем добавления/вычитания постоянного значения к каждому цветовому каналу.
-        private void ColorShiftChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (sourceImage == null) return;
-
-            Image<Bgr, byte> colorshiftImage = sourceImage.Clone();
-
-            int red = (int)RedSlider.Value;
-            int green = (int)GreenSlider.Value;
-            int blue = (int)BlueSlider.Value;
-
-            for (int y = 0; y < colorshiftImage.Rows; y++)
-            {
-                for (int x = 0; x < colorshiftImage.Cols; x++)
-                {
-                    Bgr pixel = colorshiftImage[y, x];
-
-                    //Простое сложение для сдвига цвета.
-                    double newR = pixel.Red + red;
-                    double newG = pixel.Green + green;
-                    double newB = pixel.Blue + blue;
-.
-                    pixel.Red = (byte)Math.Max(0, Math.Min(255, newR));
-                    pixel.Green = (byte)Math.Max(0, Math.Min(255, newG));
-                    pixel.Blue = (byte)Math.Max(0, Math.Min(255, newB));
-
-                    colorshiftImage[y, x] = pixel;
-                }
-            }
-
-            MainImage.Source = ToBitmapSource(colorshiftImage);
         }
 
         // Применяем гамма-коррекцию к изображению. Это нелинейный способ изменения яркости, который сильнее влияет на средние тона.

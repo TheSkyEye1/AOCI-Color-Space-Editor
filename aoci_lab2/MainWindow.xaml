@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:aoci_lab2"
         mc:Ignorable="d"
-        Title="Лабораторная работа #2" Height="600" Width="1000">
+        Title="Лабораторная работа #2. Редактор цветовых пространств" Height="600" Width="1000">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -25,6 +25,8 @@
                 <Border BorderBrush="DimGray" BorderThickness="1" Margin="5">
                     <StackPanel>
                         <Label Content="Изменения в RGB" FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                        <Label Content="Яркость"/>
+                        <Slider Minimum="-255" Maximum="255" Value="0" Name="BrightnessRGBSlider" ValueChanged="OnRGBFilterChanged" SmallChange="1" LargeChange="10"/>
                         <Label Content="Контраст"/>
                         <Slider Minimum="0.5" Maximum="3.0" Value="1.0" Name="ContrastRGBSlider" ValueChanged="OnRGBFilterChanged"/>
                         <Label Content="Насыщенность"/>
@@ -32,17 +34,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border BorderBrush="DimGray" BorderThickness="1" Margin="5">
-                    <StackPanel>
-                        <Label Content="Изменения в HSV" FontWeight="Bold" HorizontalContentAlignment="Center"/>
-                        <Label Content="Контраст"/>
-                        <Slider Minimum="0.5" Maximum="3.0" Value="1.0" Name="ContrastHSVSlider" ValueChanged="OnHSVFilterChanged"/>
-                        <Label Content="Насыщенность"/>
-                        <Slider Minimum="0.0" Maximum="2.0" Value="1.0" Name="SaturationHSVSlider" ValueChanged="OnHSVFilterChanged"/>
-                        <Label Content="Цветовой тон"/>
-                        <Slider Minimum="-180" Maximum="180" Value="0" Name="HueHSVSlider" ValueChanged="OnHSVFilterChanged" Margin="0,0,0,10"/>
-                    </StackPanel>
-                </Border>
+                
             </StackPanel>
         </Border>
 
@@ -52,17 +44,6 @@
 
         <Border Grid.Column="2" BorderBrush="DimGray" BorderThickness="1" Margin="5">
             <StackPanel Margin="5">
-                <Border BorderBrush="DimGray" BorderThickness="1" Margin="5">
-                    <StackPanel>
-                        <Label Content="Коррекция цвета" FontWeight="Bold" HorizontalContentAlignment="Center"/>
-                        <Label Content="Красный"/>
-                        <Slider Minimum="-255" Maximum="255" Value="0" Name="RedSlider" ValueChanged="ColorShiftChanged"/>
-                        <Label Content="Зеленый"/>
-                        <Slider Minimum="-255" Maximum="255" Value="0" Name="GreenSlider" ValueChanged="ColorShiftChanged"/>
-                        <Label Content="Синий"/>
-                        <Slider Minimum="-255" Maximum="255" Value="0" Name="BlueSlider" ValueChanged="ColorShiftChanged" Margin="0,0,0,10"/>
-                    </StackPanel>
-                </Border>
 
                 <Label Content="Гамма коррекция"/>
                 <Slider Minimum="0.01" Maximum="5" Value="1" Name="GammaSlider" ValueChanged="GammaChanged" Margin="0,0,0,10"/>
@@ -70,6 +51,19 @@
                 <Label Content="Постеризация"/>
                 <Slider Minimum="2" Maximum="32" Value="8" Name="LevelsSlider" ValueChanged="LevelsChanged" Margin="0,0,0,10"/>
 
+                <Border BorderBrush="DimGray" BorderThickness="1" Margin="5">
+                    <StackPanel>
+                        <Label Content="Изменения в HSV" FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                        <Label Content="Яркость"/>
+                        <Slider Minimum="-255" Maximum="255" Value="0" Name="BrightnessHSVSlider" ValueChanged="OnHSVFilterChanged" SmallChange="1" LargeChange="10"/>
+                        <Label Content="Контраст"/>
+                        <Slider Minimum="0.5" Maximum="3.0" Value="1.0" Name="ContrastHSVSlider" ValueChanged="OnHSVFilterChanged"/>
+                        <Label Content="Насыщенность"/>
+                        <Slider Minimum="0.0" Maximum="2.0" Value="1.0" Name="SaturationHSVSlider" ValueChanged="OnHSVFilterChanged"/>
+                        <Label Content="Цветовой тон"/>
+                        <Slider Minimum="-180" Maximum="180" Value="0" Name="HueHSVSlider" ValueChanged="OnHSVFilterChanged" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </Border>
     </Grid>
